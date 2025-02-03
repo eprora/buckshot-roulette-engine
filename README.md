@@ -25,8 +25,6 @@ The executable `BRsimulation.exe` runs a benchmark test of the current implement
 
 This is a CMake project. The only dependency is `Catch2` for the tests and it is imported via the CMake configuration with a fixed version. The tests run in CTest. The project was successfully build using `GCC 12.2.0 x86_64-w64-mingw32`.
 
-The code uses assertions which are not present in the Release build. Therefore it is possible that the Release build might reach illegal states (it is not stable). To debug the code use a Debug build which will make you aware if and where in the code that happens.
-
 ## Game Rules
 
 Buckshot Roulette is essentially a variant of the game Russian Roulette but played with a shotgun. A shotgun is loaded with a known amount of live and blank rounds in an unknown order. The player and dealer each take turns in shooting the gun. Each participant can point the shotgun either towards themselves or their opponent. Shooting yourself with a blank round round skips the turn of your opponent. Any participant hit by a live round gets one of their up to four lives (defibrilator charges) deduced. A participant loses the game if they lose all their lives. If the shotgun empties it is reloaded with a new set of rounds.
