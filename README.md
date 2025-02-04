@@ -29,7 +29,7 @@ This is a CMake project. The only dependency is `Catch2` for the tests and it is
 
 Buckshot Roulette is essentially a variant of the game Russian Roulette but played with a shotgun. A shotgun is loaded with a known amount of live and blank rounds in an unknown order. The player and dealer each take turns in shooting the gun. Each participant can point the shotgun either towards themselves or their opponent. Shooting yourself with a blank round round skips the turn of your opponent. Any participant hit by a live round gets one of their up to four lives (defibrilator charges) deduced. A participant loses the game if they lose all their lives. If the shotgun empties it is reloaded with a new set of rounds.
 
-The game gains an extra layer of strategy from the special items. At each shotgun reload both participants draw a random number of these special items from a chest. If it's the participant's turn they can use any amount of their items before they need to grab the gun to make their shot while the opponent must watch.
+The game gains an extra layer of strategy from the special items. At each shotgun reload both participants draw a random number of these special items from a chest. If it's the participant's turn they can use any amount of their items before they need to grab the gun to make their shot while the opponent must watch. The list of available items depends on the game mode, but below is a table of all possible items:
 
 | Item | Special Effect |
 |---|---|
@@ -37,13 +37,17 @@ The game gains an extra layer of strategy from the special items. At each shotgu
 | Magnifying glass | Know the next round in the chamber. |
 | Handsaw | When applied, the shotgun has doubled damage. A sawed-off shotgun cannot be sawed off again and the state resets after each shot and finished stage. |
 | Handcuffs | Skips the next turn of the opponent. Cannot be applied twice in a row. Is removed after each shotgun reload. |
+| Jammer | Works like handcuffs but is only available in multiplayer. The player can then choose the victim. |
 | Burner phone | Know a random round after the next round in the chamber if there are any. |
 | Beer | Visibly ejects the next round in the chamber. User keeps their turn. |
-| Expired medicine | 50% chance of losing a life. 50% chance of gaining two. |
+| Expired medicine | 50% chance of losing a life. 50% chance of gaining two. Not available in multiplayer. |
 | Inverter | Without affecting the other rounds in the shotgun, switches the next round type in the chamber from blank to live or vice versa. The use is seen by the opponent and the round stays hidden if not already known by any participant. |
 | Adrenalin | User can steal and must immediately use a chosen item of their opponent. Has a time limit when used after which the opportunity vanishes. |
+| Remote | In multiplayer this item can be used to reverse the order of play. |
 
-The game has two game modes. The main game mode is very scripted and utilizes only a selection of items. It finishes after three stages and you can get revived which makes this mode easy to win. Therefore, this project focuses on the harder **Double or Nothing** mode. The player must win 3 stages after which they get a payout based on their finishing time. They can then decide to double the money or cash out (which is the final score). When the player decides to double the money they must win another three stages in succession, otherwise the entire money is lost and they must restart from the beginning. This is an endless mode with the goal of reaching the highest score before payout.
+The game has three game modes. The main game mode is very scripted and utilizes only the cigarettes, handsaw, handcuffs, beer and magnifying glass. It finishes after three stages and you can get revived which makes this mode easy to win. This project focuses on the harder **Double or Nothing** mode. The player must win 3 stages after which they get a payout based on their finishing time. They can then decide to double the money or cash out (which is the final score). When the player decides to double the money they must win another three stages in succession, otherwise the entire money is lost and they must restart from the beginning. This is an endless mode with the goal of reaching the highest score before payout.
+
+The final game mode was released on Halloween 2024. It is the multiplayer mode with up to four players. Any player can point the weapon at any player and is not limited to pointing the gun at the next player or themselves. The win condition is configurable by the host. This game mode might be tackled in a future update of this engine.
 
 ## Solution
 
@@ -114,6 +118,9 @@ Furthermore, to be able to reproduce scenarios for debugging or benchmarking it 
 ## Outlook
 No software project is ever truly finished. The following chapter discusses improvements that might be adressed in future versions. The end goal is to solve the 48 layers of depth for every possible starting configurations in less than a minute. Given the performance of chess engines and the complexity of chess compared to this game this should be feasible.
 
+### Multiplayer
+The biggest problem to tackle is adding support for the multiplayer mode, since the new four player mode needs an remodeling of the state machine and dependent classes.
+
 ### Move ordering
 A low hanging fruit is to order the children of each node heuristically. Alpha-beta pruning will then be more likely to prune branches and this can result in a huge performance gain. As a starting point the results of a previous run of the iterative deepening can be used which will also benedit from move ordering.
 
@@ -121,7 +128,7 @@ A low hanging fruit is to order the children of each node heuristically. Alpha-b
 The current transposition table is not bounded in size and for long searches this is noticable. It must be bounded and a replacement strategy implemented.
 
 ### Multithreading
-As mentioned above there is a lot of room for improvement in this departement. Goal is for the software to be able to use 100% of the available system resources from start to end of the search and not vary so much in CPU usage like it does now. This can be achieved by using smarter thread handling (using thread pools) and transposition table use. There are also advanced parallel processing techniques like SIMD instructions and so on.
+As mentioned above there is a lot of room for improvement in this departement. Goal is for the software to be able to use 100% of the available system resources from start to end of the search and not vary so much in CPU usage like it does now. This can be achieved by using smarter thread handling (using thread pools) and transposition table use.
 
 ### User interface
 The software could benefit from a better user inteface. Be it a GUI or a web interface for better portability.
